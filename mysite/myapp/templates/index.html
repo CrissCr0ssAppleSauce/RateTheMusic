@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  {% block content %}
+  <head>
+    <style>
+      img{
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+
+      h1 {
+        display: flex;
+        align-items: center;
+        transition: 0.75s;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .artist-container{
+        display: flex;
+        align-items: center;
+        transition: 0.75s;
+        padding-left: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        background-color: #e5e5e5;
+      }
+      .artist-container:hover {
+        background: #ADA9AA
+      }
+      .info {
+        color: black;
+        padding-left: 5px;
+        flex-basis: 40%;
+      }
+
+      .myform {
+        display: inline-block;
+        background-color: #e5e5e5;
+        padding-left: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 10px;
+      }
+
+      ul li{
+        list-style-type: none;
+      }
+
+      .fa-star{
+        color: #FFBB42;
+      }
+    </style>
+    <script src="https://kit.fontawesome.com/3190614108.js"
+  crossorigin="anonymous">
+    </script>
+  </head>
+
+  <body>
+    <h1><img src="https://e.snmc.io/3.0/img/logo/sonemic-512.png" width="100" height=100">Rate the Music</h1>
+    <hr>
+
+    <h2>Artists</h2>
+    <ul>
+    {% for i in artists %}
+
+      <li>
+        <a href="{{ request.path }}Artist/{{i.artist_id}}">
+          <div class="artist-container">
+          <div class="cover"><img src="http://{{request.get_host}}{{i.artist_pic.url}}" ></div>
+          <span class="info">{{i.name}}
+            <p>
+            {% with ''|center:i.avg_rating_art_round as range %}
+            {% for j in range %}
+              <i class="fas fa-star"></i>
+            {% endfor %}
+            {% endwith %}
+            </p>
+          </span>
+          </div>
+        </a>
+      </li>
+
+    {% endfor %}
+    </ul>
+
+    <p>Don't see an artist listed?</p>
+    <p>Add them here!</p>
+    <form action="{{request.path}}" method="post" enctype="multipart/form-data" class="myform">
+      {% csrf_token %}
+      {{artist_form.as_p}}
+      <input type="submit">
+    </form>
+
+  </body>
+  {% endblock %}
+</html>

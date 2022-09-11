@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  {% block content %}
+  <head>
+
+    <style>
+      .rating{
+        position: absolute;
+        display: flex;
+
+        transform: rotateY(180deg);
+      }
+
+      .rating label{
+        display: block;
+        cursor: pointer;
+        width: 30px;
+        padding-left: 10px;
+      }
+
+      .rating input{
+        display: none;
+        color: black;
+      }
+
+      .rating label::before{
+        content: '\f005';
+        font-weight: 900;
+        font-family: 'Font Awesome 5 Free';
+        font-size: 25px;
+        position: relative;
+        display: block;
+        color: #000000;
+      }
+
+      .rating label:hover::before,
+      .rating label:hover ~ label::before,
+      .rating input:checked ~ label::before {
+        color: #FFBB42;
+      }
+
+      #rating_class {
+        color: #FFBB42;
+
+      }
+
+      .review {
+        margin: 10px;
+        display: block;
+        background-color: #e5e5e5;
+        padding-left: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 10px;
+      }
+
+      .myform {
+        display: block;
+        background-color: #e5e5e5;
+        padding-left: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 10px;
+      }
+
+    </style>
+
+    <script src="https://kit.fontawesome.com/3190614108.js"
+  crossorigin="anonymous">
+    </script>
+
+  </head>
+
+  <body>
+    <a href="http://{{request.get_host}}">home</a>
+    <h1>{{album_header}}</h1>
+    <hr>
+
+    <h2>Average Score:
+      {% with ''|center:average as myrange%}
+      {% for j in myrange %}
+        <span id="rating_class"><i class="fas fa-star"></i></span>
+      {% endfor %}
+      {% endwith %}
+      {{actual_avg}}
+    </h2>
+
+    <h2>Reviews</h2>
+    <hr>
+    {% for i in reviews %}
+    <div class="review">
+
+        <p><strong>{{i.username}}</strong><span id="rating_class">
+        {% with ''|center:i.rating as range %}
+        {% for j in range %}
+          <i class="fas fa-star"></i>
+        {% endfor %}
+        {% endwith %}
+      </span></p>
+      <p>{{i.review_msg}}</p>
+    </div>
+    {% endfor %}
+
+    <h2>Post a Review!</h2>
+    <form action="{{request.path}}" method="post" class="myform">
+      {% csrf_token %}
+
+      {{review_form.username.label}}{{review_form.username}}
+      <br>
+
+      <div class="rating-container">
+        <p>Rating:</p>
+
+        <div class="rating">
+          <input type="radio" name="rating" value="5" class="rt" required="" id="id_rating_0">
+          <label for="id_rating_0"></label>
+          <input type="radio" name="rating" value="4" class="rt" required="" id="id_rating_1">
+          <label for="id_rating_1"></label>
+          <input type="radio" name="rating" value="3" class="rt" required="" id="id_rating_2">
+          <label for="id_rating_2"></label>
+          <input type="radio" name="rating" value="2" class="rt" required="" id="id_rating_3">
+          <label for="id_rating_3"></label>
+          <input type="radio" name="rating" value="1" class="rt" required="" id="id_rating_4">
+          <label for="id_rating_4"></label>
+        </div>
+      </div>
+
+      <div class="msg">
+        <br><br>
+        <span id="name">{{review_form.review_msg.label}}</span>
+        <br>
+        {{review_form.review_msg}}
+      </div>
+      <br><br>
+
+      <input type="submit">
+    </form>
+  </body>
+  {% endblock %}
+</html>
